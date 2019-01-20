@@ -1,4 +1,3 @@
-// Import flutter helper library
 import 'dart:convert';
 
 import "package:flutter/material.dart";
@@ -8,13 +7,7 @@ import 'package:http/http.dart' as http;
 import 'models/image_model.dart';
 //show get - in tutorial; // ЗАгрузить из пакета http только get function
 
-// Create class that will our custom widget
-//this Class must extends 'StatelessWidget' base class
-
-// Для загрузки новой фотографии необходимо сделать отедльный метод
-
 class App extends StatefulWidget {
-
   createState() {
     return AppState();
   }
@@ -22,7 +15,6 @@ class App extends StatefulWidget {
 
 //class AppState extends StatelessWidget{
 class AppState extends State<App> {
-// Must define a 'build' method returns the widgets that *this* widget will show
   int counter = 0;
   List<ImageModel> images = [];
 
@@ -31,7 +23,6 @@ class AppState extends State<App> {
     counter++;
     var response = await http.get('https://jsonplaceholder.typicode.com/photos/'); // Этот метод возвращает future
     var imageModel = ImageModel.fromJson(json.decode(mockJson));
-
     // Эта команда проинформирует родительский класс о том, что были внесены изменения необходио перерисовать
     setState(() {
       images.add(imageModel);
@@ -39,26 +30,18 @@ class AppState extends State<App> {
 
     print(response.body);
     print(counter);
-
     print(imageModel.title + ' ' + imageModel.id.toString() + imageModel.url);
   }
 
   // Life
-
+  @override
   Widget build(context) {
     return MaterialApp(
       home: Scaffold(
-//        body: Text('$counter'),
-        body: ImageList(),
+        body: ImageList(images),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.clear), // Добаляем child icon
-            onPressed: fetchImage
-//            setState(() {
-//              counter += 1;
-//            });
-            //print('Hi there!!!');
-
-            ),
+            onPressed: fetchImage),
         appBar: AppBar(
           title: Text('Lets see some images!!!'),
         ),
