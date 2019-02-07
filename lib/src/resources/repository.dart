@@ -8,7 +8,7 @@ import 'news_db_provider.dart';
 class Repository {
   List<Source> sources = <Source>[
     newsDbProvider, //NewsDbProvider(),
-    NewsDbProvider(),
+    NewsApiProvider(),
   ];
 
   List<Cache> caches = <Cache>[
