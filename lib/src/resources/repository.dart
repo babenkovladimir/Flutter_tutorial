@@ -22,7 +22,7 @@ class Repository {
     return sources[1].fetchTopIds();
   }
 
-  Future<ItemModel> fetchItem(int id) async {
+  Future<ItemModel> fetchItem_(int id) async {// Not used
 //    var item = await dbProvider.fetchItem(id);
 //
 //    if (item != null) {
@@ -33,10 +33,10 @@ class Repository {
 //    dbProvider.addItem(item); // Нет необходимости дожидаться, пока зхапись будет записана в базу данный - await не используем
 
     ItemModel item;
-    Source source;
+    //Source source;
 
-    for (source in sources) {
-      item = await source.fetchItem(id);
+    for (Source source in sources) {
+      ItemModel item = await source.fetchItem(id);
       if (item != null) {
         break;
       }
@@ -47,6 +47,21 @@ class Repository {
     }
 
     return item;
+  }
+
+  Future<ItemModel> fetchItem(int id) async {
+    for (Source source in sources) {
+      ItemModel item = await source.fetchItem(id);
+      if (item != null) {
+        for (var cache in caches) {
+          if (source is Cache && cache != (source as Cache)) {
+            cache.addItem(item);
+          }
+        }
+        return item;
+      }
+    }
+    return null;
   }
 }
 
