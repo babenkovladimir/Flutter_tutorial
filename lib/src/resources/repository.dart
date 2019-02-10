@@ -22,7 +22,8 @@ class Repository {
     return sources[1].fetchTopIds();
   }
 
-  Future<ItemModel> fetchItem_(int id) async {// Not used
+  Future<ItemModel> fetchItem_(int id) async {
+    // Not used
 //    var item = await dbProvider.fetchItem(id);
 //
 //    if (item != null) {
@@ -33,9 +34,9 @@ class Repository {
 //    dbProvider.addItem(item); // Нет необходимости дожидаться, пока зхапись будет записана в базу данный - await не используем
 
     ItemModel item;
-    //Source source;
+    var source;
 
-    for (Source source in sources) {
+    for (source in sources) {
       ItemModel item = await source.fetchItem(id);
       if (item != null) {
         break;
@@ -43,7 +44,9 @@ class Repository {
     }
 
     for (var cache in caches) {
-      cache.addItem(item);
+      if (cache != source) {
+        cache.addItem(item);
+      }
     }
 
     return item;
@@ -63,6 +66,12 @@ class Repository {
     }
     return null;
   }
+
+  clearCache() async {
+    for (var cache in caches) {
+      await cache.clear();
+    }
+  }
 }
 
 abstract class Source {
@@ -73,4 +82,6 @@ abstract class Source {
 
 abstract class Cache {
   Future<int> addItem(ItemModel item);
+
+  Future<int> clear();
 }
